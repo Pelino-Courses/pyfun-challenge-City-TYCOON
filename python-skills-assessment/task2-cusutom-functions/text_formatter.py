@@ -1,37 +1,57 @@
-def format_text(text: str, prefix: str = "", suffix: str = "", capitalize: bool = False, max_length: int = None) -> str:
+def format_text(text, prefix="", suffix="", capitalize=False, max_length=None):
     """
-    Format text with optional prefix, suffix, capitalization, and truncation.
+    Formats a given text with a prefix, suffix, capitalization, and a maximum length.
 
-    Parameters:
-    - text (str): The base text to format.
-    - prefix (str): Optional prefix to add.
-    - suffix (str): Optional suffix to add.
-    - capitalize (bool): Capitalize the first letter if True.
-    - max_length (int): Maximum allowed length of the final string.
-
-    Returns:
-    - str: Formatted text.
-
-    Raises:
-    - TypeError: If input types are incorrect.
-    - ValueError: If max_length is negative.
-
-    Example:
-    >>> format_text("hello", prefix=">>", suffix="<<", capitalize=True, max_length=10)
+    Examples:
+    >>> format_text("hello", prefix=">>", suffix="<<", capitalize=True)
     '>>Hello<<'
-    """
-    if not isinstance(text, str):
-        raise TypeError("Text must be a string.")
-    if not isinstance(prefix, str) or not isinstance(suffix, str):
-        raise TypeError("Prefix and suffix must be strings.")
-    if not isinstance(capitalize, bool):
-        raise TypeError("Capitalize must be a boolean.")
-    if max_length is not None and (not isinstance(max_length, int) or max_length < 0):
-        raise ValueError("max_length must be a non-negative integer.")
 
-    result = f"{prefix}{text}{suffix}"
+    >>> format_text("message", max_length=4)
+    'mess'
+    """
+
+    # Input validation
+    if type(text) != str:
+        raise ValueError("The main text must be a string.")
+    if type(prefix) != str or type(suffix) != str:
+        raise ValueError("Prefix and suffix must be strings.")
+    if type(capitalize) != bool:
+        raise ValueError("Capitalize must be either True or False.")
+    if max_length is not None:
+        if type(max_length) != int:
+            raise ValueError("max_length must be an integer.")
+        if max_length < 0:
+            raise ValueError("max_length must be a non-negative number.")
+
+    # Trim the main text if needed
+    trimmed_text = text[:max_length] if max_length is not None else text
+
+    # Apply formatting
+    result = prefix + trimmed_text + suffix
     if capitalize:
         result = result.capitalize()
-    if max_length is not None:
-        result = result[:max_length]
+
     return result
+
+
+try:
+    user_text = input("Enter the main text: ")
+    user_prefix = input("Enter a prefix: ")
+    user_suffix = input("Enter a suffix: ")
+    cap_input = input("Capitalize the text? (True/False): ").strip().lower()
+    capitalize = True if cap_input == "true" else False
+
+    max_len_input = input("Enter max length: ").strip()
+    max_length = int(max_len_input) if max_len_input else None
+
+    final_output = format_text(
+        text=user_text,
+        prefix=user_prefix,
+        suffix=user_suffix,
+        capitalize=capitalize,
+        max_length=max_length,
+    )
+
+    print("\nFormatted text:", final_output)
+except ValueError as e:
+    print("Error:", e)
